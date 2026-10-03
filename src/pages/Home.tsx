@@ -13,6 +13,20 @@ import { Posh } from '../sections/home/Posh'
 import { Voices } from '../sections/home/Voices'
 import { Finale } from '../sections/home/Finale'
 
+/**
+ * On phones the service panels scroll inside a pinned window (1px of page
+ * scroll = 1px of reel travel).  Express each panel as the page box that would
+ * put its centre at the viewport centre at the same scroll position as it
+ * reaches the window's centre, so the shared choreography works unchanged.
+ */
+function reelBoxes(el: HTMLElement) {
+  const body = el.querySelector<HTMLElement>('.paths__body')!
+  const win = el.querySelector<HTMLElement>('.paths__panels')!
+  const top = box(body).top
+  const shift = (window.innerHeight - win.clientHeight) / 2
+  return [...el.querySelectorAll<HTMLElement>('.panel')].map((p) => ({ top: top + p.offsetTop + shift, height: p.offsetHeight }))
+}
+
 export default function Home() {
   const ref = useRef<HTMLDivElement>(null)
   useReveals(ref)
@@ -25,18 +39,19 @@ export default function Home() {
   useSceneTrack(() => {
     const el = ref.current!
     const q = (s: string) => el.querySelector(s)
+    const mobile = isMobile()
     return homeKeys(
       {
         hero: box(q('.hero')),
         manifesto: box(q('.manifesto')),
         finder: box(q('.finder')),
-        panels: [...el.querySelectorAll('.panel')].map(box),
+        panels: mobile ? reelBoxes(el) : [...el.querySelectorAll('.panel')].map(box),
         method: box(q('.method')),
         posh: box(q('.posh')),
         cta: box(q('.finale')),
       },
       window.innerHeight,
-      isMobile(),
+      mobile,
     )
   })
 

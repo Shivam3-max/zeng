@@ -96,7 +96,7 @@ export function homeKeys(m: HomeMeasures, vh: number, mobile: boolean): Key[] {
   const run = Math.max(1, m.manifesto.height - vh)
   const finder = S({ shape: 0, x: mobile ? 0.7 : 0.78, y: 0.55, scale: mobile ? 0.42 : 0.3, opacity: 0.18 })
   const path = (shape: number) =>
-    mobile ? S({ shape, x: 0, y: 0.46, scale: 0.54 }) : S({ shape, x: -0.5, y: -0.02, scale: 0.58 })
+    mobile ? S({ shape, x: 0, y: 0.585, scale: 0.46 }) : S({ shape, x: -0.5, y: -0.02, scale: 0.58 })
 
   const keys: Key[] = [
     { at: 0, s: hero },

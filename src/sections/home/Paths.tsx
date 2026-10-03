@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { TLink } from '../../components/Transition'
 import { Glyph } from '../../lib/glyphs'
 import { calm, gsap, ScrollTrigger, scrollToTarget } from '../../lib/motion'
@@ -19,16 +19,92 @@ export function Paths() {
     const el = ref.current
     if (!el) return
     const panels = [...el.querySelectorAll<HTMLElement>('.panel')]
-    const triggers = panels.map((p, i) =>
-      ScrollTrigger.create({
-        trigger: p,
-        start: 'top 50%',
-        end: 'bottom 50%',
-        onToggle: (self) => self.isActive && setActive(i),
-      }),
-    )
+    const mm = gsap.matchMedia()
+
+    // Laptop & desktop: panels scroll past a sticky stage in the left column.
+    mm.add('(min-width: 900px)', () => {
+      const triggers = panels.map((p, i) =>
+        ScrollTrigger.create({
+          trigger: p,
+          start: 'top 50%',
+          end: 'bottom 50%',
+          onToggle: (self) => self.isActive && setActive(i),
+        }),
+      )
+      return () => triggers.forEach((t) => t.kill())
+    })
+
+    // Phones & tablets: the stage pins on top and the text scrolls through a
+    // window beneath it, 1:1 with the finger — the same flow, stacked.
+    mm.add('(max-width: 899px)', () => {
+      const body = el.querySelector<HTMLElement>('.paths__body')!
+      const win = el.querySelector<HTMLElement>('.paths__panels')!
+      const reel = el.querySelector<HTMLElement>('.paths__reel')!
+      const pin = el.querySelector<HTMLElement>('.paths__pin')!
+      const travel = () => Math.max(0, reel.scrollHeight - win.clientHeight)
+      // size from the pinned element (100svh), not innerHeight — they differ
+      // whenever a phone's address bar is showing
+      const size = () => {
+        body.style.height = `${pin.offsetHeight + travel()}px`
+      }
+      size()
+      ScrollTrigger.addEventListener('refreshInit', size)
+
+      let current = -1
+      const focus = (T: number) => {
+        const mid = T + win.clientHeight / 2
+        let best = 0
+        let bestD = Infinity
+        panels.forEach((p, i) => {
+          const c = p.offsetTop + p.offsetHeight / 2
+          const d = Math.abs(c - mid)
+          if (d < bestD) {
+            bestD = d
+            best = i
+          }
+          // the panel nearest the window's centre is in focus; the rest recede
+          const near = Math.min(1, Math.abs(c - mid) / (win.clientHeight * 0.9))
+          p.style.opacity = String(1 - near * 0.62)
+        })
+        if (best !== current) {
+          current = best
+          setActive(best)
+        }
+      }
+      const st = ScrollTrigger.create({
+        trigger: body,
+        start: 'top top',
+        end: 'bottom bottom',
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          // 1px of page scroll = 1px of text travel, exactly
+          const T = Math.min(travel(), Math.max(0, self.scroll() - self.start))
+          gsap.set(reel, { y: -T })
+          focus(T)
+        },
+      })
+      focus(0)
+
+      // explorer cards can change height as they play; keep the pin honest
+      let t = 0
+      const ro = new ResizeObserver(() => {
+        window.clearTimeout(t)
+        t = window.setTimeout(() => ScrollTrigger.refresh(), 160)
+      })
+      ro.observe(reel)
+      return () => {
+        ro.disconnect()
+        window.clearTimeout(t)
+        st.kill()
+        ScrollTrigger.removeEventListener('refreshInit', size)
+        body.style.height = ''
+        gsap.set(reel, { clearProps: 'transform' })
+        panels.forEach((p) => (p.style.opacity = ''))
+      }
+    })
+
     const ctx = gsap.context(() => {
-      if (calm()) return
+      if (calm() || window.matchMedia('(max-width: 899px)').matches) return
       panels.forEach((p) => {
         gsap.from(p.querySelectorAll('.panel__kicker, .panel__title, .panel__line'), {
           autoAlpha: 0,
@@ -50,7 +126,7 @@ export function Paths() {
       })
     }, el)
     return () => {
-      triggers.forEach((t) => t.kill())
+      mm.revert()
       ctx.revert()
     }
   }, [])
@@ -85,42 +161,49 @@ export function Paths() {
       </header>
 
       <div className="paths__body">
-        <div className="paths__stage" aria-hidden="true">
-          <div className="paths__stage-inner">
-            <ol className="paths__ticks">
-              {paths.map((p, i) => (
-                <li key={p.id} data-on={i === active}>
-                  {p.num}
-                </li>
-              ))}
-            </ol>
-            <div className="paths__numeral" key={cur.id}>
-              {cur.num}
-            </div>
-            <p className="paths__figcap figcap" key={`f-${cur.id}`}>
-              fig. {String(active + 2).padStart(2, '0')} — {cur.figure}
-            </p>
-          </div>
-        </div>
-
-        <div className="paths__panels">
-          {paths.map((p) => (
-            <article key={p.id} id={`path-${p.id}`} className="panel" aria-labelledby={`t-${p.id}`}>
-              <div className="panel__inner">
-                <p className="panel__kicker">
-                  <span>{p.num}</span> {p.kicker}
-                </p>
-                <h3 id={`t-${p.id}`} className="panel__title">
-                  {p.name}
-                </h3>
-                <p className="panel__line">{p.line}</p>
-                <Explorer path={p} />
-                <TLink to={`/contact?path=${p.id}`} className="link-arrow">
-                  {p.cta}
-                </TLink>
+        <div className="paths__pin">
+          <div className="paths__stage" aria-hidden="true">
+            <div className="paths__stage-inner">
+              <ol className="paths__ticks">
+                {paths.map((p, i) => (
+                  <li key={p.id} data-on={i === active}>
+                    {p.num}
+                  </li>
+                ))}
+              </ol>
+              <div className="paths__numeral" key={cur.id}>
+                {cur.num}
               </div>
-            </article>
-          ))}
+              <p className="paths__figcap figcap" key={`f-${cur.id}`}>
+                fig. {String(active + 2).padStart(2, '0')} — {cur.figure}
+              </p>
+              <p className="paths__name" key={`n-${cur.id}`}>
+                {cur.short}
+              </p>
+            </div>
+          </div>
+
+          <div className="paths__panels">
+            <div className="paths__reel">
+              {paths.map((p) => (
+                <article key={p.id} id={`path-${p.id}`} className="panel" aria-labelledby={`t-${p.id}`}>
+                  <div className="panel__inner">
+                    <p className="panel__kicker">
+                      <span>{p.num}</span> {p.kicker}
+                    </p>
+                    <h3 id={`t-${p.id}`} className="panel__title">
+                      {p.name}
+                    </h3>
+                    <p className="panel__line">{p.line}</p>
+                    <Explorer path={p} />
+                    <TLink to={`/contact?path=${p.id}`} className="link-arrow">
+                      {p.cta}
+                    </TLink>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -142,12 +225,26 @@ function Explorer({ path }: { path: Path }) {
     }
     const el = detail.current
     if (calm() || !el) return
-    gsap.fromTo(el.querySelectorAll('.xp__copy > *'), { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: 0.6, ease: 'power3.out', stagger: 0.05 })
+    gsap.fromTo(
+      el.querySelectorAll('.xp__copy > *'),
+      { autoAlpha: 0, y: 14 },
+      { autoAlpha: 1, y: 0, duration: 0.6, ease: 'power3.out', stagger: 0.05 },
+    )
     gsap.fromTo(
       el.querySelectorAll('.xp__art [pathLength]:not([stroke-dasharray])'),
       { strokeDashoffset: 1 },
       { strokeDashoffset: 0, duration: 1.3, ease: 'power2.inOut', stagger: 0.04 },
     )
+  }, [index])
+
+  // on phones the tiles are a swipe strip — glide the active one into view
+  // (scroll the strip itself, never the page)
+  useEffect(() => {
+    const strip = ref.current?.querySelector<HTMLElement>('.xp__tiles')
+    const tile = strip?.children[index] as HTMLElement | undefined
+    if (!strip || !tile || strip.scrollWidth <= strip.clientWidth + 2) return
+    const left = tile.offsetLeft - (strip.clientWidth - tile.offsetWidth) / 2
+    strip.scrollTo({ left: Math.max(0, left), behavior: calm() ? 'auto' : 'smooth' })
   }, [index])
 
   const pick = (i: number) => {
@@ -221,7 +318,15 @@ function Tile({
   onPick: () => void
 }) {
   return (
-    <button type="button" role="tab" aria-selected={active} className="xp__tile" onClick={onPick} title={title} data-cursor={active ? undefined : 'Open'}>
+    <button
+      type="button"
+      role="tab"
+      aria-selected={active}
+      className="xp__tile"
+      onClick={onPick}
+      title={title}
+      data-cursor={active ? undefined : 'Open'}
+    >
       <Glyph name={glyph} size={26} />
       <span>{label}</span>
       {active && running && <i className="xp__timer" style={{ animationDuration: `${delay}ms` }} aria-hidden="true" />}

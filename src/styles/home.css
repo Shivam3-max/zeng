@@ -203,6 +203,12 @@
   grid-template-columns: 1fr 1fr;
   margin-top: clamp(30px, 6vh, 60px);
 }
+.paths__pin {
+  display: contents;
+}
+.paths__name {
+  display: none;
+}
 .paths__stage {
   position: sticky;
   top: 0;
@@ -313,45 +319,6 @@
   font-size: clamp(1.25rem, 1.7vw, 1.55rem);
   line-height: 1.3;
   color: var(--accent);
-}
-.panel__body {
-  margin: 0 0 26px;
-  max-width: 34em;
-  color: var(--fg-soft);
-}
-.panel__list {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  column-gap: 26px;
-  margin: 0 0 24px;
-  padding: 0;
-  list-style: none;
-}
-.panel__list li {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 9px 0;
-  border-top: 1px solid var(--line);
-  font-size: 0.93rem;
-  line-height: 1.3;
-}
-.panel__list--dense {
-  grid-template-columns: repeat(3, 1fr);
-  column-gap: 18px;
-}
-.panel__list--dense li {
-  font-size: 0.86rem;
-}
-.panel__helps {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 7px;
-  margin-bottom: 28px;
-}
-.panel__helps .label {
-  margin-right: 6px;
 }
 
 /* ---------- method ---------- */
@@ -880,22 +847,6 @@
     font-size: clamp(2rem, 3.2vw, 3rem);
     margin: 12px 0 10px;
   }
-  .panel__body {
-    margin-bottom: 16px;
-    font-size: 0.95rem;
-  }
-  .panel__list li {
-    padding: 6px 0;
-  }
-  .panel__list {
-    margin-bottom: 16px;
-  }
-  .panel__helps {
-    margin-bottom: 18px;
-  }
-  .panel__helps .tag {
-    padding: 4px 10px;
-  }
   .finder__card {
     min-height: 420px;
   }
@@ -904,11 +855,6 @@
 /* ============================================================
    Tablet & phone
    ============================================================ */
-@media (max-width: 1100px) {
-  .panel__list--dense {
-    grid-template-columns: 1fr 1fr;
-  }
-}
 
 @media (max-width: 899px), (max-height: 559px) {
   .method {
@@ -1002,48 +948,6 @@
   }
   .finder__empty {
     min-height: 260px;
-  }
-
-  .paths__body {
-    display: block;
-  }
-  .paths__stage {
-    height: 100svh;
-    margin-bottom: -100svh;
-    z-index: 0;
-  }
-  .paths__ticks {
-    display: none;
-  }
-  .paths__numeral {
-    top: calc(var(--header-h) + 8px);
-    bottom: auto;
-    font-size: 4.6rem;
-  }
-  .paths__figcap {
-    top: 47svh;
-    bottom: auto;
-    font-size: 0.92rem;
-  }
-  .panel {
-    position: relative;
-    z-index: 1;
-    min-height: 0;
-    padding: 54svh var(--gutter) 6svh;
-  }
-  .panel__inner {
-    padding: 26px 22px;
-    border: 1px solid var(--line);
-    border-radius: 24px;
-    background: color-mix(in srgb, var(--bg) 80%, transparent);
-    -webkit-backdrop-filter: blur(16px);
-    backdrop-filter: blur(16px);
-  }
-  .panel__list {
-    grid-template-columns: 1fr;
-  }
-  .panel__list--dense {
-    grid-template-columns: 1fr 1fr;
   }
 
   .posh__fig {

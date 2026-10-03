@@ -267,6 +267,9 @@
 .xp__art {
   justify-self: center;
 }
+.xp__copy {
+  min-width: 0;
+}
 .xp__name {
   margin: 0 0 6px;
   font-family: var(--serif);
@@ -1514,18 +1517,168 @@
   .skym {
     display: none;
   }
+  /* ---- services on phones: pinned stage on top, text reel below ---- */
+  .paths__body {
+    display: block;
+    margin-top: 28px;
+  }
+  .paths__pin {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    display: grid;
+    grid-template-rows: minmax(250px, 43svh) 1fr;
+    overflow: hidden;
+  }
+  .paths__stage {
+    position: relative;
+    top: auto;
+    height: auto;
+  }
+  .paths__stage-inner {
+    height: 100%;
+  }
+  .paths__numeral {
+    left: var(--gutter);
+    top: auto;
+    bottom: 16px;
+    font-size: clamp(3.2rem, 15vw, 4.2rem);
+  }
+  .paths__figcap {
+    left: auto;
+    right: var(--gutter);
+    bottom: 40px;
+    max-width: 62%;
+    transform: none;
+    white-space: normal;
+    text-align: right;
+    font-size: 0.88rem;
+    line-height: 1.25;
+  }
+  .paths__name {
+    display: block;
+    position: absolute;
+    right: var(--gutter);
+    bottom: 16px;
+    margin: 0;
+    font: 600 0.66rem/1 var(--sans);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    animation: stage-fade 0.9s var(--ease) both;
+  }
+  .paths__ticks {
+    display: flex;
+    left: var(--gutter);
+    right: var(--gutter);
+    top: auto;
+    bottom: 0;
+    transform: none;
+    gap: 4px;
+    font-size: 0;
+  }
+  .paths__ticks li {
+    flex: 1;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--line);
+    transition: background 0.5s;
+  }
+  .paths__ticks li::before {
+    display: none;
+  }
+  .paths__ticks li:has(~ li[data-on='true']) {
+    background: color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+  .paths__ticks li[data-on='true'] {
+    background: var(--accent);
+  }
+  .paths__panels {
+    position: relative;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(transparent 0, #000 34px, #000 calc(100% - 30px), transparent);
+    mask-image: linear-gradient(transparent 0, #000 34px, #000 calc(100% - 30px), transparent);
+  }
+  .paths__reel {
+    position: relative;
+    padding: 14px 0 22svh;
+    will-change: transform;
+  }
+  .panel {
+    min-height: 0;
+    display: block;
+    padding: 24px var(--gutter) 34px;
+    border-top: 1px solid var(--line);
+  }
+  .panel:first-child {
+    border-top: 0;
+  }
+  .panel__inner {
+    max-width: none;
+  }
+  .panel__title {
+    margin: 10px 0 8px;
+    font-size: clamp(1.95rem, 8.6vw, 2.5rem);
+  }
+  .panel__line {
+    margin-bottom: 14px;
+    font-size: 1.12rem;
+  }
+  .xp {
+    margin-bottom: 20px;
+  }
   .xp__tiles {
-    grid-template-columns: repeat(3, 1fr);
+    display: flex;
+    gap: 8px;
+    margin-inline: calc(var(--gutter) * -1);
+    padding: 2px var(--gutter) 6px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+  }
+  .xp__tiles::-webkit-scrollbar {
+    display: none;
+  }
+  .xp__tile {
+    flex: 0 0 94px;
+    min-height: 82px;
+    scroll-snap-align: center;
+  }
+  .xp__tile:hover {
+    transform: none;
   }
   .xp__detail {
-    grid-template-columns: 1fr;
-    justify-items: start;
-    gap: 10px;
+    grid-template-columns: 56px 1fr;
+    align-items: start;
+    gap: 14px;
+    min-height: 0;
+    margin-top: 10px;
+    padding: 14px 16px;
   }
   .xp__art {
-    justify-self: start;
-    width: 64px;
-    height: 64px;
+    width: 56px;
+    height: 56px;
+    justify-self: center;
+  }
+  .xp__name {
+    font-size: 1.35rem;
+  }
+  .xp__desc,
+  .xp__desc--body {
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+  .xp__helps {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .xp__helps::-webkit-scrollbar {
+    display: none;
+  }
+  .xp__helps .tag {
+    flex: none;
   }
   .sky,
   .bridge__grid,
