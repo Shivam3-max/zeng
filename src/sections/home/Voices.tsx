@@ -1,12 +1,14 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useRef } from 'react'
 import { calm, gsap } from '../../lib/motion'
+import { useAutoCycle } from '../../lib/interact'
 import { testimonials } from '../../lib/content'
 
 export function Voices() {
-  const [i, setI] = useState(0)
+  const ref = useRef<HTMLElement>(null)
   const quote = useRef<HTMLDivElement>(null)
+  const { index, select, running, delay } = useAutoCycle(testimonials.length, ref, () => 7000)
   const first = useRef(true)
-  const t = testimonials[i]
+  const t = testimonials[index]
 
   useLayoutEffect(() => {
     if (first.current) {
@@ -15,12 +17,12 @@ export function Voices() {
     }
     if (calm() || !quote.current) return
     gsap.fromTo(quote.current.children, { autoAlpha: 0, y: 26 }, { autoAlpha: 1, y: 0, duration: 0.9, ease: 'power3.out', stagger: 0.08 })
-  }, [i])
+  }, [index])
 
-  const step = (d: number) => setI((v) => (v + d + testimonials.length) % testimonials.length)
+  const step = (d: number) => select((index + d + testimonials.length) % testimonials.length)
 
   return (
-    <section className="voices" data-tone="dawn">
+    <section ref={ref} className="voices" data-tone="dawn">
       <div className="voices__grid wrap">
         <div className="voices__side">
           <p className="eyebrow">In their words</p>
@@ -31,20 +33,29 @@ export function Voices() {
             <button type="button" onClick={() => step(-1)} aria-label="Previous story">
               ←
             </button>
-            <span>
-              {String(i + 1).padStart(2, '0')} / {String(testimonials.length).padStart(2, '0')}
-            </span>
             <button type="button" onClick={() => step(1)} aria-label="Next story">
               →
             </button>
           </div>
         </div>
-        <figure ref={quote} className="voices__quote" aria-live="polite">
-          <blockquote>{t.quote}</blockquote>
-          <figcaption>
-            <strong>{t.who}</strong> · {t.path}
-          </figcaption>
-        </figure>
+        <div>
+          <figure ref={quote} className="voices__quote" aria-live="polite">
+            <blockquote>{t.quote}</blockquote>
+            <figcaption>
+              <strong>{t.who}</strong> · {t.path}
+            </figcaption>
+          </figure>
+          <ol className="voices__dots" aria-label="Stories">
+            {testimonials.map((x, i) => (
+              <li key={x.who}>
+                <button type="button" aria-label={`Story ${i + 1}: ${x.path}`} aria-current={i === index} onClick={() => select(i)}>
+                  <span>{x.path}</span>
+                  <i style={i === index && running ? { animationDuration: `${delay}ms` } : undefined} data-run={i === index && running} />
+                </button>
+              </li>
+            ))}
+          </ol>
+        </div>
       </div>
     </section>
   )

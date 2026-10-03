@@ -141,7 +141,7 @@ function debugScene() {
   const q = new URLSearchParams(location.search)
   if (!q.has('shape')) return null
   const n = (k: string, d: number) => (q.has(k) ? +q.get(k)! : d)
-  return S({ shape: n('shape', 0), x: n('sx', 0), y: n('sy', 0), scale: n('ss', 0.6), opacity: n('so', 1), rings: n('rings', 0), warm: n('warm', 0) })
+  return S({ shape: n('shape', 0), x: n('sx', 0), y: n('sy', 0), scale: n('ss', 0.6), opacity: n('so', 1), rings: n('rings', 0), warm: n('warm', 0), stir: n('stir', 0) })
 }
 
 /** Absolute document box of an element. */

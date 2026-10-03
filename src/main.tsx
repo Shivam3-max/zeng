@@ -7,6 +7,7 @@ import './styles/home.css'
 import './styles/widgets.css'
 import './styles/about.css'
 import './styles/contact.css'
+import './styles/interact.css'
 
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
 

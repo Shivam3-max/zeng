@@ -3,6 +3,8 @@ import { Glyph } from '../lib/glyphs'
 import { box, calm, gsap, introDelay, introReady, isMobile, SplitText, useMagnetic, useReveals, useSceneTrack } from '../lib/motion'
 import { aboutKeys } from '../scene/choreo'
 import { bridge, promises, sessionFlow, story, toolkit } from '../lib/content'
+import { stackedSequences, stillBeat, useAutoCycle, useScrollSteps } from '../lib/interact'
+import { sceneStore } from '../scene/store'
 import { Finale } from '../sections/home/Finale'
 
 export default function About() {
@@ -94,33 +96,52 @@ function AboutHero() {
   )
 }
 
+const ROMAN = ['I', 'II', 'III', 'IV', 'V']
+
+/** The story as pinned chapters — one thought on screen at a time. */
 function Story() {
+  const ref = useRef<HTMLElement>(null)
+  const { index, jump } = useScrollSteps(ref, story.length)
+  const stat = stackedSequences()
+  const state = (i: number) => (stat ? 'on' : i < index ? 'past' : i === index ? 'on' : 'next')
   return (
-    <section className="story" data-tone="night">
-      <div className="story__grid wrap">
-        <aside className="story__aside">
-          <p className="eyebrow">Why I do this work</p>
-          <p className="story__pull" data-reveal="lines">
-            “Healing rarely arrives through <em>one door.</em>”
-          </p>
-        </aside>
-        <div className="story__body">
-          {story.map((p, i) => (
-            <p key={i} data-reveal className={i === 0 ? 'story__first' : undefined}>
-              {p}
-            </p>
+    <section ref={ref} className={`story${stat ? ' is-static' : ''}`} data-tone="night">
+      <div className="story__sticky wrap">
+        <p className="eyebrow">Why I do this work</p>
+        <div className="story__stage">
+          {story.map((c, i) => (
+            <article key={c.lead} className="chapter" data-state={state(i)}>
+              <span className="chapter__num">Chapter {ROMAN[i]}</span>
+              <h2 className="chapter__lead">{c.lead}</h2>
+              <p className="chapter__text">{c.text}</p>
+              {i === story.length - 1 && <p className="chapter__sign">— Hardeep</p>}
+            </article>
           ))}
-          <p className="story__sign" data-reveal>
-            — Hardeep
-          </p>
         </div>
+        {!stat && (
+          <nav className="story__nav" aria-label="Chapters">
+            {story.map((c, i) => (
+              <button key={c.lead} type="button" data-on={i === index} onClick={() => jump(i)}>
+                <span>{ROMAN[i]}</span>
+                <i />
+              </button>
+            ))}
+          </nav>
+        )}
       </div>
     </section>
   )
 }
 
+/** Three doors — tap one to open it. They assemble into a Venn as you arrive. */
 function Bridge() {
   const ref = useRef<HTMLElement>(null)
+  const doors = useRef<HTMLDivElement>(null)
+  const card = useRef<HTMLDivElement>(null)
+  const { index, select, running, delay } = useAutoCycle(bridge.length, doors, () => 4200)
+  const b = bridge[index]
+  const first = useRef(true)
+
   useLayoutEffect(() => {
     const el = ref.current
     if (!el) return
@@ -132,13 +153,22 @@ function Bridge() {
     const st = gsap.to(venn, {
       '--p': 1,
       ease: 'none',
-      scrollTrigger: { trigger: venn, start: 'top 85%', end: 'center 50%', scrub: 0.8 },
+      scrollTrigger: { trigger: venn, start: 'top 85%', end: 'center 55%', scrub: 0.8 },
     })
     return () => {
       st.scrollTrigger?.kill()
       st.kill()
     }
   }, [])
+
+  useLayoutEffect(() => {
+    if (first.current) {
+      first.current = false
+      return
+    }
+    if (calm() || !card.current) return
+    gsap.fromTo(card.current.querySelectorAll('.door__head > *, .door__items li'), { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: 0.55, ease: 'power3.out', stagger: 0.05 })
+  }, [index])
 
   return (
     <section ref={ref} className="bridge" data-tone="dusk">
@@ -148,80 +178,163 @@ function Bridge() {
           Three doors. <em>One home.</em>
         </h2>
         <p className="lede" data-reveal>
-          Most therapy works with one layer of you. I work with three — and with the place where they meet.
+          Most therapy works with one layer of you. I work with three. Open a door.
         </p>
       </header>
-      <div className="bridge__stage">
-        <div className="venn" style={{ ['--p' as string]: 0 }}>
-          {bridge.map((b, i) => (
-            <div key={b.id} className={`venn__c venn__c--${i}`}>
-              <span className="venn__title">{b.title}</span>
-              <span className="venn__line">{b.line}</span>
-            </div>
-          ))}
-          <span className="venn__you">you</span>
-        </div>
-      </div>
-      <div className="bridge__cols wrap" data-reveal="stagger">
-        {bridge.map((b) => (
-          <div key={b.id}>
-            <h3>{b.title}</h3>
-            <ul>
-              {b.items.map((it) => (
-                <li key={it}>{it}</li>
-              ))}
-            </ul>
+      <div ref={doors} className="bridge__grid wrap">
+        <div className="bridge__stage">
+          <div className="venn" style={{ ['--p' as string]: 0 }} data-active={index}>
+            {bridge.map((d, i) => (
+              <button
+                key={d.id}
+                type="button"
+                className={`venn__c venn__c--${i}`}
+                data-on={i === index}
+                aria-pressed={i === index}
+                onClick={() => {
+                  select(i)
+                  sceneStore.pulse(0.6)
+                }}
+              >
+                <span className="venn__title">{d.title}</span>
+                <span className="venn__line">{d.line}</span>
+              </button>
+            ))}
+            <span className="venn__you">you</span>
           </div>
-        ))}
+        </div>
+        <div ref={card} className="door glass" aria-live="polite">
+          <div className="door__head">
+            <Glyph key={b.id} name={b.glyph} size={58} />
+            <div>
+              <p className="label">Door {ROMAN[index]}</p>
+              <p className="door__title">{b.title}</p>
+              <p className="door__line">{b.line}</p>
+            </div>
+            {running && <i className="xp__timer door__timer" style={{ animationDuration: `${delay}ms` }} key={index} aria-hidden="true" />}
+          </div>
+          <ul className="door__items">
+            {b.items.map((it) => (
+              <li key={it.name}>
+                <Glyph name={it.glyph} size={30} />
+                {it.name}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </section>
   )
 }
 
+const NODES = [
+  [60, 150],
+  [280, 70],
+  [500, 150],
+  [720, 70],
+  [940, 150],
+] as const
+const JOURNEY = NODES.map(([x, y], i) => {
+  if (!i) return `M${x} ${y}`
+  const [px, py] = NODES[i - 1]
+  const mx = (px + x) / 2
+  return `C${mx} ${py} ${mx} ${y} ${x} ${y}`
+}).join(' ')
+
+/** A session as a journey: a light travels the path as you scroll. */
 function Flow() {
   const ref = useRef<HTMLElement>(null)
+  const path = useRef<SVGPathElement>(null)
+  const drawn = useRef<SVGPathElement>(null)
+  const dot = useRef<SVGGElement>(null)
+  const n = sessionFlow.length
+  const stat = stackedSequences()
+
+  const paint = (p: number) => {
+    const pa = path.current
+    if (!pa || !drawn.current || !dot.current) return
+    const f = Math.min(1, Math.max(0, (p * n - 0.5) / (n - 1)))
+    const len = pa.getTotalLength()
+    const pt = pa.getPointAtLength(f * len)
+    drawn.current.style.strokeDashoffset = String(1 - f)
+    dot.current.setAttribute('transform', `translate(${pt.x.toFixed(1)} ${pt.y.toFixed(1)})`)
+  }
+  const { index, jump } = useScrollSteps(ref, n, paint)
+
   useLayoutEffect(() => {
-    const el = ref.current
-    if (!el || calm()) return
-    const ctx = gsap.context(() => {
-      gsap.fromTo('.flow__line i', { scaleY: 0 }, { scaleY: 1, ease: 'none', scrollTrigger: { trigger: '.flow__list', start: 'top 65%', end: 'bottom 65%', scrub: true } })
-      el.querySelectorAll('.flow__item').forEach((it) =>
-        gsap.from(it, { autoAlpha: 0, x: 30, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: it, start: 'top 75%', once: true } }),
-      )
-    }, el)
-    return () => ctx.revert()
+    const beat = stillBeat()
+    paint(stat ? 1 : Number.isFinite(beat) ? (beat + 0.5) / n : 0)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const s = sessionFlow[index]
   return (
-    <section ref={ref} className="flow" data-tone="dusk">
-      <div className="flow__grid wrap">
-        <header className="flow__head">
-          <p className="eyebrow">A session with me</p>
-          <h2 className="h2" data-reveal="lines">
-            How healing <em>unfolds.</em>
-          </h2>
+    <section ref={ref} className={`flow${stat ? ' is-static' : ''}`} data-tone="dusk">
+      <div className="flow__sticky">
+        <header className="flow__head wrap">
+          <div>
+            <p className="eyebrow">A session with me</p>
+            <h2 className="h2" data-reveal="lines">
+              How healing <em>unfolds.</em>
+            </h2>
+          </div>
           <p className="lede" data-reveal>
-            Every session is different, but the arc is familiar: we listen, we understand, we release, we rewire — and then we make it
-            last.
+            We listen, we understand, we release, we rewire — and then we make it last. Follow the light.
           </p>
         </header>
-        <ol className="flow__list">
-          <span className="flow__line" aria-hidden="true">
-            <i />
-          </span>
-          {sessionFlow.map((s, i) => (
-            <li key={s.title} className="flow__item">
-              <span className="flow__num">0{i + 1}</span>
-              <div className="flow__card">
-                <Glyph name={s.glyph} size={44} />
-                <div>
-                  <h3>{s.title}</h3>
-                  <p>{s.line}</p>
-                </div>
+
+        <div className="journey wrap">
+          <div className="journey__map">
+            <svg viewBox="0 0 1000 220" aria-hidden="true">
+              <path ref={path} d={JOURNEY} className="journey__base" />
+              <path ref={drawn} d={JOURNEY} className="journey__drawn" pathLength={1} />
+              <g ref={dot} className="journey__dot">
+                <circle r="16" />
+                <circle r="5" />
+              </g>
+            </svg>
+            {sessionFlow.map((f, i) => (
+              <button
+                key={f.title}
+                type="button"
+                className="journey__node"
+                data-on={stat || i <= index}
+                aria-current={i === index}
+                style={{ left: `${NODES[i][0] / 10}%`, top: `${(NODES[i][1] / 220) * 100}%` }}
+                onClick={() => jump(i)}
+              >
+                <span className="journey__n">0{i + 1}</span>
+                <span className="journey__t">{f.title}</span>
+              </button>
+            ))}
+          </div>
+
+          {stat ? (
+            <ol className="journey__all">
+              {sessionFlow.map((f, i) => (
+                <li key={f.title} className="journey__card">
+                  <Glyph name={f.glyph} size={52} />
+                  <div>
+                    <p className="journey__k">Step 0{i + 1}</p>
+                    <h3>{f.title}</h3>
+                    <p>{f.line}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <div className="journey__card" key={s.title}>
+              <Glyph name={s.glyph} size={60} />
+              <div>
+                <p className="journey__k">
+                  Step 0{index + 1} of 0{n}
+                </p>
+                <h3>{s.title}</h3>
+                <p>{s.line}</p>
               </div>
-            </li>
-          ))}
-        </ol>
+            </div>
+          )}
+        </div>
       </div>
     </section>
   )
@@ -273,20 +386,56 @@ function Toolkit() {
   )
 }
 
+/** Six promises as an index — hover a promise to open it. */
 function Promises() {
+  const ref = useRef<HTMLDivElement>(null)
+  const card = useRef<HTMLDivElement>(null)
+  const { index, select, running, delay } = useAutoCycle(promises.length, ref, () => 4200)
+  const p = promises[index]
+  const first = useRef(true)
+  useLayoutEffect(() => {
+    if (first.current) {
+      first.current = false
+      return
+    }
+    if (calm() || !card.current) return
+    gsap.fromTo(card.current.children, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.6, ease: 'power3.out', stagger: 0.06 })
+    gsap.fromTo(
+      card.current.querySelectorAll('.glyph [pathLength]:not([stroke-dasharray])'),
+      { strokeDashoffset: 1 },
+      { strokeDashoffset: 0, duration: 1.2, ease: 'power2.out', stagger: 0.05 },
+    )
+  }, [index])
+
   return (
     <section className="promises" data-tone="dawn">
-      <div className="wrap">
-        <p className="eyebrow">My promises to you</p>
-        <ol className="promises__grid" data-reveal="stagger">
-          {promises.map((p, i) => (
-            <li key={p.t}>
-              <span className="promises__n">{String(i + 1).padStart(2, '0')}</span>
-              <h3>{p.t}</h3>
-              <p>{p.d}</p>
-            </li>
-          ))}
-        </ol>
+      <div ref={ref} className="promises__grid wrap">
+        <div>
+          <p className="eyebrow">My promises to you</p>
+          <ol className="promises__list" role="tablist" aria-label="Promises">
+            {promises.map((x, i) => (
+              <li key={x.t}>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={i === index}
+                  onClick={() => select(i)}
+                  onPointerEnter={(e) => e.pointerType === 'mouse' && i !== index && select(i)}
+                >
+                  <span className="promises__n">{String(i + 1).padStart(2, '0')}</span>
+                  {x.t}
+                  {i === index && running && <i className="xp__timer" style={{ animationDuration: `${delay}ms` }} aria-hidden="true" />}
+                </button>
+              </li>
+            ))}
+          </ol>
+        </div>
+        <div ref={card} className="promise-card" role="tabpanel" aria-live="polite">
+          <span className="promise-card__n">{String(index + 1).padStart(2, '0')}</span>
+          <Glyph key={p.t} name={p.glyph} size={96} />
+          <p className="promise-card__t">{p.t}</p>
+          <p className="promise-card__d">{p.d}</p>
+        </div>
       </div>
     </section>
   )

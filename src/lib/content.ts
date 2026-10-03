@@ -28,7 +28,7 @@ export const waLink = (text: string) =>
 /*  The eight paths (service pillars).                                 */
 /*  `shape` is the particle form the WebGL soul takes for this path.   */
 /* ------------------------------------------------------------------ */
-export type Service = { name: string; glyph: GlyphName }
+export type Service = { name: string; glyph: GlyphName; desc: string; short?: string }
 export type Path = {
   id: string
   num: string
@@ -59,16 +59,16 @@ export const paths: Path[] = [
     shape: 1,
     glyph: 'waves',
     services: [
-      { name: 'Behavioural counselling', glyph: 'loop' },
-      { name: 'Psychological counselling', glyph: 'mind' },
-      { name: 'Emotional counselling', glyph: 'heart' },
-      { name: 'Stress counselling & online stress management', glyph: 'waves' },
-      { name: 'Grief therapy', glyph: 'tear' },
-      { name: 'Anger management', glyph: 'flame' },
-      { name: 'Fear & phobia counselling', glyph: 'eye' },
-      { name: 'Motivation & goal-orientation counselling', glyph: 'target' },
-      { name: 'Pain management', glyph: 'leaf' },
-      { name: 'Taboo & unspoken subjects', glyph: 'veil' },
+      { name: 'Behavioural counselling', glyph: 'loop', desc: 'Notice the habits and loops behind how you feel — then practise new ones.' },
+      { name: 'Psychological counselling', glyph: 'mind', desc: 'A structured, evidence-informed space to understand your mind and its patterns.' },
+      { name: 'Emotional counselling', glyph: 'heart', desc: 'Room to feel what you feel, name it, and stop carrying it alone.' },
+      { name: 'Stress counselling & online stress management', glyph: 'waves', desc: 'Practical tools to calm a nervous system that never switches off — from anywhere.', short: 'Stress & online stress care' },
+      { name: 'Grief therapy', glyph: 'tear', desc: 'Gentle company through loss, at the pace grief actually moves.' },
+      { name: 'Anger management', glyph: 'flame', desc: 'Understand what sits underneath the anger, and respond instead of react.' },
+      { name: 'Fear & phobia counselling', glyph: 'eye', desc: 'Shrink fears back to their real size, one careful step at a time.' },
+      { name: 'Motivation & goal-orientation counselling', glyph: 'target', desc: 'Find your why again, then turn it into a plan you can keep.', short: 'Motivation & goals' },
+      { name: 'Pain management', glyph: 'leaf', desc: 'Ease how pain lives in your body and mind, alongside your medical care.' },
+      { name: 'Taboo & unspoken subjects', glyph: 'veil', desc: 'Sex, shame, family secrets — nothing is too awkward to bring here.' },
     ],
     helps: [
       'Anxiety & anxiety disorders',
@@ -96,14 +96,14 @@ export const paths: Path[] = [
     shape: 2,
     glyph: 'rings',
     services: [
-      { name: 'Pre-marriage counselling', glyph: 'rings' },
-      { name: 'Post-marriage counselling', glyph: 'heart' },
-      { name: 'Toxic & narcissistic relationships', glyph: 'knot' },
-      { name: 'NPD burnout trauma recovery', glyph: 'mask' },
-      { name: 'Peer counselling', glyph: 'peers' },
-      { name: 'Sibling & family counselling', glyph: 'circle' },
-      { name: 'Parent–child counselling', glyph: 'family' },
-      { name: 'Conscious uncoupling', glyph: 'split' },
+      { name: 'Pre-marriage counselling', glyph: 'rings', desc: 'The honest conversations about money, family and expectations — before the vows.' },
+      { name: 'Post-marriage counselling', glyph: 'heart', desc: 'Rebuild trust, closeness and communication when married life feels heavy.' },
+      { name: 'Toxic & narcissistic relationships', glyph: 'knot', desc: 'See the pattern clearly, set boundaries, and find your way out of the fog.', short: 'Toxic & narcissistic bonds' },
+      { name: 'NPD burnout trauma recovery', glyph: 'mask', desc: 'Recover your confidence and nervous system after narcissistic abuse.' },
+      { name: 'Peer counselling', glyph: 'peers', desc: 'Support with friendships and peer pressure, for students and young adults.' },
+      { name: 'Sibling & family counselling', glyph: 'circle', desc: 'Untangle old family roles so home stops feeling like a battlefield.' },
+      { name: 'Parent–child counselling', glyph: 'family', desc: 'Help parents and children truly hear each other again.' },
+      { name: 'Conscious uncoupling', glyph: 'split', desc: 'If it is ending, end it with dignity, clarity and less damage.' },
     ],
     helps: [
       'Toxic relationships',
@@ -127,11 +127,11 @@ export const paths: Path[] = [
     shape: 3,
     glyph: 'neural',
     services: [
-      { name: 'Neural plasticity work', glyph: 'neural' },
-      { name: 'Conditioning & belief change', glyph: 'loop' },
-      { name: 'Recall · Recode · Reset process', glyph: 'recode' },
-      { name: 'NLP — Neuro-Linguistic Programming', glyph: 'speech' },
-      { name: 'Goal orientation', glyph: 'target' },
+      { name: 'Neural plasticity work', glyph: 'neural', desc: 'Use the brain’s capacity to change to build calmer default responses.' },
+      { name: 'Conditioning & belief change', glyph: 'loop', desc: 'Spot the beliefs you were trained into — and quietly retrain them.' },
+      { name: 'Recall · Recode · Reset process', glyph: 'recode', desc: 'Find where a pattern began, rewrite it, and practise the new normal.', short: 'Recall · Recode · Reset' },
+      { name: 'NLP — Neuro-Linguistic Programming', glyph: 'speech', desc: 'Change the inner language and pictures that keep you stuck.', short: 'NLP' },
+      { name: 'Goal orientation', glyph: 'target', desc: 'Clear goals, small steps, and the mindset to keep going.' },
     ],
     helps: [
       'Limiting beliefs',
@@ -154,13 +154,13 @@ export const paths: Path[] = [
     shape: 4,
     glyph: 'spiral',
     services: [
-      { name: 'Clinical hypnotherapy', glyph: 'spiral' },
-      { name: 'Past life regression therapy', glyph: 'hourglass' },
-      { name: 'Inner child healing', glyph: 'child' },
-      { name: 'Trauma release', glyph: 'chain' },
-      { name: 'Incest trauma release', glyph: 'shield' },
-      { name: 'EFT — Emotional Freedom Technique', glyph: 'tap' },
-      { name: 'Ho’oponopono', glyph: 'petals' },
+      { name: 'Clinical hypnotherapy', glyph: 'spiral', desc: 'A deeply relaxed, focused state where old fears and habits can loosen.' },
+      { name: 'Past life regression therapy', glyph: 'hourglass', desc: 'A guided journey for fears and patterns that have no story in this life.' },
+      { name: 'Inner child healing', glyph: 'child', desc: 'Meet the younger you who was hurt, and give them what they needed.' },
+      { name: 'Trauma release', glyph: 'chain', desc: 'Paced, body-aware work so the past stops replaying in the present.' },
+      { name: 'Incest trauma release', glyph: 'shield', desc: 'Specialised, deeply confidential care for survivors — entirely at your pace.' },
+      { name: 'EFT — Emotional Freedom Technique', glyph: 'tap', desc: 'Tapping on acupressure points to settle intense emotion quickly.', short: 'EFT tapping' },
+      { name: 'Ho’oponopono', glyph: 'petals', desc: 'The Hawaiian forgiveness practice: I’m sorry, forgive me, thank you, I love you.' },
     ],
     helps: [
       'Trauma',
@@ -183,15 +183,15 @@ export const paths: Path[] = [
     shape: 5,
     glyph: 'chakra',
     services: [
-      { name: 'Reiki healing', glyph: 'palm' },
-      { name: 'Neuro chakra quantum healing', glyph: 'chakra' },
-      { name: 'Distant healing', glyph: 'signal' },
-      { name: 'Karmic healing', glyph: 'infinity' },
-      { name: 'Ancestral healing', glyph: 'roots' },
-      { name: 'Soul healing', glyph: 'orb' },
-      { name: 'Breathwork', glyph: 'breath' },
-      { name: 'Spiritual healing & meditations', glyph: 'meditate' },
-      { name: 'Holistic healing for stress', glyph: 'leaf' },
+      { name: 'Reiki healing', glyph: 'palm', desc: 'Gentle hands-on energy work that invites deep rest and release.' },
+      { name: 'Neuro chakra quantum healing', glyph: 'chakra', desc: 'Rebalance the seven energy centres where stress gets stored.' },
+      { name: 'Distant healing', glyph: 'signal', desc: 'Energy healing sent to you wherever you are — no call needed.' },
+      { name: 'Karmic healing', glyph: 'infinity', desc: 'Release cycles that feel older than you, and stop repeating them.' },
+      { name: 'Ancestral healing', glyph: 'roots', desc: 'Put down the pain your family has carried for generations.' },
+      { name: 'Soul healing', glyph: 'orb', desc: 'Deep restorative work for when you feel disconnected from yourself.' },
+      { name: 'Breathwork', glyph: 'breath', desc: 'Guided breathing that shifts how you feel within minutes.' },
+      { name: 'Spiritual healing & meditations', glyph: 'meditate', desc: 'Guided meditation to quiet the mind and reconnect with spirit.', short: 'Spiritual healing' },
+      { name: 'Holistic healing for stress', glyph: 'leaf', desc: 'Mind, body and energy approaches combined for calm that lasts.' },
     ],
     helps: [
       'Stress & burnout',
@@ -214,9 +214,9 @@ export const paths: Path[] = [
     shape: 6,
     glyph: 'card',
     services: [
-      { name: 'Tarot guidance', glyph: 'card' },
-      { name: 'Numerology', glyph: 'numbers' },
-      { name: 'Aura reading', glyph: 'aura' },
+      { name: 'Tarot guidance', glyph: 'card', desc: 'A reflective reading that brings clarity to a question or a crossroads.' },
+      { name: 'Numerology', glyph: 'numbers', desc: 'What your birth date and name suggest about your nature and timing.' },
+      { name: 'Aura reading', glyph: 'aura', desc: 'A reading of your energy field — where it is strong, and where it leaks.' },
     ],
     helps: ['Confusion', 'Crossroads & decisions', 'Life purpose', 'Timing', 'Self-understanding'],
   },
@@ -233,18 +233,18 @@ export const paths: Path[] = [
     shape: 7,
     glyph: 'circle',
     services: [
-      { name: 'Stress-free living', glyph: 'leaf' },
-      { name: 'Managing anger', glyph: 'flame' },
-      { name: 'Confidence building', glyph: 'sun' },
-      { name: 'Never give up', glyph: 'mountain' },
-      { name: 'Effective communication', glyph: 'speech' },
-      { name: 'Body language', glyph: 'body' },
-      { name: 'Goal orientation', glyph: 'target' },
-      { name: 'Self-love', glyph: 'mirror' },
-      { name: 'Beating procrastination', glyph: 'clock' },
-      { name: 'Office toxicity', glyph: 'mask' },
-      { name: 'Leadership', glyph: 'crown' },
-      { name: 'Growth mindset', glyph: 'sprout' },
+      { name: 'Stress-free living', glyph: 'leaf', desc: 'Put stress down without putting life on hold.' },
+      { name: 'Managing anger', glyph: 'flame', desc: 'Understand the fire, so it warms instead of burns.' },
+      { name: 'Confidence building', glyph: 'sun', desc: 'Quiet, durable confidence — not a performance.' },
+      { name: 'Never give up', glyph: 'mountain', desc: 'Resilience for the long middle of hard things.' },
+      { name: 'Effective communication', glyph: 'speech', desc: 'Say what you mean. Hear what is meant.' },
+      { name: 'Body language', glyph: 'body', desc: 'What you say before you speak.' },
+      { name: 'Goal orientation', glyph: 'target', desc: 'Clear goals, small steps, and the mindset to keep going.' },
+      { name: 'Self-love', glyph: 'mirror', desc: 'The relationship every other one is built on.' },
+      { name: 'Beating procrastination', glyph: 'clock', desc: 'Why we delay — and how to simply begin.' },
+      { name: 'Office toxicity', glyph: 'mask', desc: 'Name it, protect yourself, change the room.' },
+      { name: 'Leadership', glyph: 'crown', desc: 'Leading people as humans first.' },
+      { name: 'Growth mindset', glyph: 'sprout', desc: 'Turn “I can’t” into “I can’t — yet”.' },
     ],
     helps: ['Corporate teams', 'Schools & colleges', 'Community groups', 'Online cohorts'],
   },
@@ -261,11 +261,11 @@ export const paths: Path[] = [
     shape: 8,
     glyph: 'lotus',
     services: [
-      { name: 'POSH awareness training', glyph: 'shield' },
-      { name: 'Internal Committee (IC) training', glyph: 'scales' },
-      { name: 'Sexual harassment counselling', glyph: 'heart' },
-      { name: 'Counselling for women in distress', glyph: 'venus' },
-      { name: 'Women empowerment circles', glyph: 'lotus' },
+      { name: 'POSH awareness training', glyph: 'shield', desc: 'Every employee learns the line, the law, and how to speak up safely.' },
+      { name: 'Internal Committee (IC) training', glyph: 'scales', desc: 'Equip your IC to run fair, timely, well-documented inquiries.', short: 'IC training' },
+      { name: 'Sexual harassment counselling', glyph: 'heart', desc: 'Confidential support to process what happened and decide what comes next.' },
+      { name: 'Counselling for women in distress', glyph: 'venus', desc: 'A safe, private space for women facing abuse, pressure or crisis.', short: 'Women in distress' },
+      { name: 'Women empowerment circles', glyph: 'lotus', desc: 'Small-group sessions that build voice, confidence and solidarity.' },
     ],
     helps: ['Workplace safety', 'Harassment', 'Women in distress', 'Voice & self-worth'],
   },
@@ -549,6 +549,64 @@ export function lifePath(iso: string) {
 }
 
 /* ------------------------------------------------------------------ */
+/*  Manifesto beats — one at a time, scrolled through                  */
+/* ------------------------------------------------------------------ */
+export const wounds = [
+  { text: 'Some wounds don’t show.', em: 'don’t show' },
+  { text: 'Anxiety that hums all day.', em: 'Anxiety' },
+  { text: 'A love that empties you.', em: 'empties' },
+  { text: 'Grief with nowhere to go.', em: 'nowhere' },
+  { text: 'A fear with no name.', em: 'no name' },
+]
+
+/* ------------------------------------------------------------------ */
+/*  POSH — who it is for, and a readiness check                        */
+/* ------------------------------------------------------------------ */
+export const poshAudiences: { id: string; who: string; title: string; desc: string; covers: string[]; glyph: GlyphName }[] = [
+  {
+    id: 'staff',
+    who: 'Employees',
+    title: 'POSH awareness sessions',
+    desc: 'What harassment is, what it isn’t, and how to speak up safely.',
+    covers: ['What counts as harassment', 'How to report safely', 'Being a good bystander'],
+    glyph: 'shield',
+  },
+  {
+    id: 'ic',
+    who: 'IC members',
+    title: 'Internal Committee training',
+    desc: 'Inquiry procedure, timelines, documentation and sensitivity.',
+    covers: ['Inquiry procedure', 'Timelines & records', 'Sensitive interviewing'],
+    glyph: 'scales',
+  },
+  {
+    id: 'leaders',
+    who: 'Leaders & HR',
+    title: 'Leadership & HR orientation',
+    desc: 'Policy, prevention and a culture people can actually trust.',
+    covers: ['Policy & compliance', 'Prevention culture', 'Handling complaints well'],
+    glyph: 'crown',
+  },
+  {
+    id: 'women',
+    who: 'Women',
+    title: 'Confidential support for women',
+    desc: 'Counselling for women in distress and for survivors of harassment.',
+    covers: ['One-to-one counselling', 'Empowerment circles', 'Planning next steps'],
+    glyph: 'venus',
+  },
+]
+
+/** Duties under the Sexual Harassment of Women at Workplace Act, 2013. */
+export const poshChecks = [
+  'We have an Internal Committee (required with 10+ employees)',
+  'Our IC members have been trained',
+  'The policy and IC contacts are displayed at work',
+  'Employees attend regular awareness sessions',
+  'Our IC files its annual report',
+]
+
+/* ------------------------------------------------------------------ */
 /*  Testimonials — DEMO copy, replace with real client words (with     */
 /*  consent) before launch.                                            */
 /* ------------------------------------------------------------------ */
@@ -580,30 +638,60 @@ export const testimonials = [
 /* ------------------------------------------------------------------ */
 // DRAFT copy — written without Hardeep's input; confirm her story before launch.
 export const story = [
-  'I sit with people on some of the hardest days of their lives. Over the years I have learned that healing rarely arrives through one door.',
-  'Some people need to be heard, plainly and without judgement. Some carry pain the thinking mind cannot reach, and need the quieter work of hypnotherapy, regression or inner-child healing. Some need their body and energy to feel safe again before anything else can change.',
-  'So I trained in all of it — psychotherapy and counselling, clinical hypnotherapy, NLP and mind reprogramming, Reiki, chakra and energy work, tarot and numerology — not to collect methods, but so that whoever walks in, I have a door that fits them.',
-  'My promise is simple: you will be safe here, you will be taken seriously, and we will go at the pace your heart can hold.',
+  {
+    lead: 'Healing rarely arrives through one door.',
+    text: 'I sit with people on some of the hardest days of their lives. Over the years I have learned that healing rarely arrives through one door.',
+  },
+  {
+    lead: 'Some need to be heard. Some need to go deeper.',
+    text: 'Some people need to be heard, plainly and without judgement. Some carry pain the thinking mind cannot reach, and need the quieter work of hypnotherapy, regression or inner-child healing. Some need their body and energy to feel safe again before anything else can change.',
+  },
+  {
+    lead: 'So I trained in all of it.',
+    text: 'Psychotherapy and counselling, clinical hypnotherapy, NLP and mind reprogramming, Reiki, chakra and energy work, tarot and numerology — not to collect methods, but so that whoever walks in, I have a door that fits them.',
+  },
+  {
+    lead: 'You will be safe here.',
+    text: 'My promise is simple: you will be safe here, you will be taken seriously, and we will go at the pace your heart can hold.',
+  },
 ]
 
-export const bridge = [
+export const bridge: { id: string; title: string; line: string; glyph: GlyphName; items: { name: string; glyph: GlyphName }[] }[] = [
   {
     id: 'mind',
     title: 'Mind',
     line: 'Understand the pattern',
-    items: ['Counselling', 'Mind reprogramming', 'NLP', 'Recall · Recode · Reset'],
+    glyph: 'mind',
+    items: [
+      { name: 'Counselling', glyph: 'heart' },
+      { name: 'Mind reprogramming', glyph: 'neural' },
+      { name: 'NLP', glyph: 'speech' },
+      { name: 'Recall · Recode · Reset', glyph: 'recode' },
+    ],
   },
   {
     id: 'deep',
     title: 'Subconscious',
     line: 'Release the root',
-    items: ['Clinical hypnotherapy', 'Past life regression', 'Inner child healing', 'EFT & Ho’oponopono'],
+    glyph: 'spiral',
+    items: [
+      { name: 'Clinical hypnotherapy', glyph: 'spiral' },
+      { name: 'Past life regression', glyph: 'hourglass' },
+      { name: 'Inner child healing', glyph: 'child' },
+      { name: 'EFT & Ho’oponopono', glyph: 'tap' },
+    ],
   },
   {
     id: 'soul',
     title: 'Soul',
     line: 'Restore the whole',
-    items: ['Reiki & chakra healing', 'Aura reading', 'Tarot & numerology', 'Breathwork & meditation'],
+    glyph: 'orb',
+    items: [
+      { name: 'Reiki & chakra healing', glyph: 'chakra' },
+      { name: 'Aura reading', glyph: 'aura' },
+      { name: 'Tarot & numerology', glyph: 'card' },
+      { name: 'Breathwork & meditation', glyph: 'breath' },
+    ],
   },
 ]
 
@@ -627,29 +715,29 @@ export const toolkit: { name: string; ring: string; glyph: GlyphName; line: stri
   { name: 'POSH Facilitation', ring: 'POSH · WOMEN · SAFETY · ', glyph: 'shield', line: 'Workplace awareness and Internal Committee training.' },
 ]
 
-export const promises = [
-  { t: 'Confidential, always', d: 'What you share stays between us — unless someone’s life is in immediate danger.' },
-  { t: 'Without judgement', d: 'No subject is too strange, too shameful or too taboo to bring.' },
-  { t: 'Trauma-informed', d: 'You lead. Nothing is forced, and you can pause at any moment.' },
-  { t: 'At your pace', d: 'Some people need one session. Some need a season. Both are fine.' },
-  { t: 'Online, anywhere', d: 'Video sessions worldwide; distant healing needs no call at all.' },
-  { t: 'Mind and soul, together', d: 'Evidence-informed therapy and spiritual healing, side by side.' },
+export const promises: { t: string; d: string; glyph: GlyphName }[] = [
+  { t: 'Confidential, always', d: 'What you share stays between us — unless someone’s life is in immediate danger.', glyph: 'shield' },
+  { t: 'Without judgement', d: 'No subject is too strange, too shameful or too taboo to bring.', glyph: 'veil' },
+  { t: 'Trauma-informed', d: 'You lead. Nothing is forced, and you can pause at any moment.', glyph: 'breath' },
+  { t: 'At your pace', d: 'Some people need one session. Some need a season. Both are fine.', glyph: 'clock' },
+  { t: 'Online, anywhere', d: 'Video sessions worldwide; distant healing needs no call at all.', glyph: 'signal' },
+  { t: 'Mind and soul, together', d: 'Evidence-informed therapy and spiritual healing, side by side.', glyph: 'orb' },
 ]
 
 /* ------------------------------------------------------------------ */
 /*  Contact                                                            */
 /* ------------------------------------------------------------------ */
-export const enquiryKinds = [
-  { id: 'talk', label: 'A first conversation' },
-  { id: 'healing', label: 'A healing session' },
-  { id: 'reading', label: 'A reading' },
-  { id: 'org', label: 'A workshop or POSH for my organisation' },
+export const enquiryKinds: { id: string; label: string; sub: string; glyph: GlyphName }[] = [
+  { id: 'talk', label: 'A first conversation', sub: 'Talk it through, no commitment', glyph: 'speech' },
+  { id: 'healing', label: 'A healing session', sub: 'Hypnotherapy, energy & deep work', glyph: 'palm' },
+  { id: 'reading', label: 'A reading', sub: 'Tarot, numerology or aura', glyph: 'card' },
+  { id: 'org', label: 'For my organisation', sub: 'Workshops & POSH training', glyph: 'circle' },
 ]
 
-export const modes = [
-  { id: 'online', label: 'Online video', line: 'From anywhere in the world' },
-  { id: 'studio', label: 'In person', line: 'At the private studio' },
-  { id: 'distant', label: 'Distant healing', line: 'No call needed' },
+export const modes: { id: string; label: string; line: string; glyph: GlyphName }[] = [
+  { id: 'online', label: 'Online video', line: 'From anywhere in the world', glyph: 'signal' },
+  { id: 'studio', label: 'In person', line: 'At the private studio', glyph: 'peers' },
+  { id: 'distant', label: 'Distant healing', line: 'No call needed', glyph: 'orb' },
 ]
 
 export const times = ['Morning', 'Afternoon', 'Evening']

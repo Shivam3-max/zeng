@@ -42,15 +42,16 @@ ok(JSON.stringify(buildShapes(50)) === JSON.stringify(buildShapes(50)), 'forms a
 // ---------- choreography ----------
 const vh = 800
 const b = (top: number, height: number): Box => ({ top, height })
-const panels = Array.from({ length: 8 }, (_, i) => b(3400 + i * 820, 820))
+// manifesto is now a pinned 420vh sequence
+const panels = Array.from({ length: 8 }, (_, i) => b(5900 + i * 820, 820))
 const m = {
   hero: b(0, 800),
-  manifesto: b(800, 900),
-  finder: b(1700, 1100),
+  manifesto: b(800, 3360),
+  finder: b(4160, 1100),
   panels,
-  method: b(10000, 2560),
-  posh: b(17000, 1100),
-  cta: b(19300, 960),
+  method: b(12500, 2560),
+  posh: b(19500, 1100),
+  cta: b(21800, 960),
 }
 for (const mobile of [false, true]) {
   const tag = mobile ? 'mobile' : 'desktop'
@@ -65,7 +66,7 @@ for (const mobile of [false, true]) {
   // weights always sum to 1 and values stay in range
   let sumOk = true, rangeOk = true, maxJump = 0
   let prev = sample(keys, 0)
-  for (let y = 0; y <= 21000; y += 4) {
+  for (let y = 0; y <= 23500; y += 4) {
     const s = sample(keys, y)
     const sum = s.w.reduce((a, v) => a + v, 0)
     if (!near(sum, 1, 1e-6)) sumOk = false
@@ -78,7 +79,11 @@ for (const mobile of [false, true]) {
   ok(maxJump < 0.05, `${tag}: no visual jumps per 4px of scroll (max ${maxJump.toFixed(4)})`)
   // the soul is hidden while the method / rituals / index sections play
   ok(sample(keys, m.method.top + 600).opacity < 0.01, `${tag}: hidden during the method section`)
-  ok(sample(keys, 15000).opacity < 0.01, `${tag}: hidden during index & workshops`)
+  ok(sample(keys, 17500).opacity < 0.01, `${tag}: hidden during index & workshops`)
+  const run = m.manifesto.height - vh
+  ok(near(sample(keys, m.manifesto.top + run * 0.76).stir, 1), `${tag}: the wounds stir the soul`)
+  ok(near(sample(keys, m.manifesto.top + run).stir, 0) && sample(keys, m.manifesto.top + run).opacity > 0.6, `${tag}: "I hold space" settles and brightens it`)
+  ok(sample(keys, m.manifesto.top + run * 0.3).stir > 0 && sample(keys, m.manifesto.top + run * 0.3).stir < 1, `${tag}: stir rises gradually`)
   const poshC = sample(keys, m.posh.top + m.posh.height / 2 - vh / 2)
   ok(near(poshC.w[8], 1) && near(poshC.opacity, 1), `${tag}: lotus returns for POSH`)
   const sun = sample(keys, m.cta.top + m.cta.height - vh)
@@ -104,6 +109,9 @@ ok(lifePath('not a date') === null, 'bad input → null')
 
 // ---------- content integrity ----------
 ok(paths.length === 8 && paths.every((p, i) => p.shape === i + 1), 'eight paths mapped to forms 1–8')
+const missing = paths.flatMap((p) => p.services.filter((sv) => !sv.desc || sv.desc.length < 20).map((sv) => sv.name))
+ok(missing.length === 0, `every service has a one-line explanation (${missing.join(', ') || 'all present'})`)
+ok(paths.every((p) => p.services.every((sv) => (sv.short ?? sv.name).length <= 30)), 'tile labels fit in two lines')
 ok(serviceCount >= 59, `service count ${serviceCount}`)
 ok(feelings.every((f) => paths.some((p) => p.id === f.path)), 'every feeling links to a real path')
 ok(feelings.some((f) => f.crisis), 'a crisis-aware feeling exists')

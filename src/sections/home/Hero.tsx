@@ -63,6 +63,7 @@ export function Hero() {
 
       <p className="hero__fig figcap" aria-hidden="true">
         fig. 01 — the soul, at rest
+        <span className="hero__hint">move your cursor through it</span>
       </p>
 
       <div className="hero__meta wrap">

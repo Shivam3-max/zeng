@@ -76,6 +76,7 @@ export class SoulScene {
         uBreath: { value: 0 },
         uLight: { value: this.light },
         uWarm: { value: 0 },
+        uPulse: { value: 0 },
         uMouse: { value: this.mouse },
         uAspect: { value: 1 },
         uOpacity: { value: 1 },
@@ -223,6 +224,7 @@ export class SoulScene {
     c.opacity += (tgt.opacity - c.opacity) * k
     c.rings += (tgt.rings - c.rings) * k
     c.warm += (tgt.warm - c.warm) * k
+    c.stir += (tgt.stir - c.stir) * k
     this.light += (sceneStore.light - this.light) * (this.opts.still ? 1 : 1 - Math.exp(-dt * 3))
 
     const starOpacity = (1 - this.light) * 0.9
@@ -244,7 +246,7 @@ export class SoulScene {
       tilt += v * TILT[i]
       spin += v * SPIN[i]
     })
-    this.spinAngle += spin * dt * motion
+    this.spinAngle += spin * dt * motion * (1 + c.stir * 2.2)
 
     // layout: viewport fractions → world units
     const aspect = this.camera.aspect
@@ -263,7 +265,8 @@ export class SoulScene {
     const u = this.mat.uniforms
     u.uTime.value = elapsed * motion
     u.uW.value = c.w
-    u.uTurb.value = (1 - maxW) * 1.05
+    u.uTurb.value = (1 - maxW) * 1.05 + c.stir * 0.62
+    u.uPulse.value = this.opts.reduced ? 0 : sceneStore.pulseLevel()
     u.uBreath.value = this.opts.reduced ? 0 : Math.sin((elapsed * Math.PI * 2) / 9) * 0.035
     u.uLight.value = this.light
     u.uWarm.value = c.warm

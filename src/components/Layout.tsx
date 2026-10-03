@@ -8,6 +8,7 @@ import { Header } from './Header'
 import { Footer } from './Footer'
 import { Cursor } from './Cursor'
 import { Preloader } from './Preloader'
+import { SkyMeter } from './SkyMeter'
 
 export function Layout() {
   const location = useLocation()
@@ -61,6 +62,7 @@ export function Layout() {
         <Outlet />
       </main>
       <Footer />
+      <SkyMeter />
       <Cursor />
       <Preloader />
     </TransitionProvider>

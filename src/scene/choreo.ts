@@ -19,6 +19,8 @@ export type SceneState = {
   rings: number
   /** 0 = aura palette, 1 = dawn-sun gold */
   warm: number
+  /** 0 = settled, 1 = agitated (the manifesto's wounds) */
+  stir: number
 }
 
 export type Key = { at: number; s: SceneState }
@@ -31,7 +33,7 @@ export function oneHot(i: number): number[] {
   return Array.from({ length: N_SHAPES }, (_, k) => (k === i ? 1 : 0))
 }
 
-export const BASE: SceneState = { w: oneHot(0), x: 0, y: 0, scale: 0.6, opacity: 1, rings: 0, warm: 0 }
+export const BASE: SceneState = { w: oneHot(0), x: 0, y: 0, scale: 0.6, opacity: 1, rings: 0, warm: 0, stir: 0 }
 
 /** Build a full state: `S({ shape: 3, x: -0.5 })`. */
 export function S(p: Partial<SceneState> & { shape?: number }): SceneState {
@@ -48,6 +50,7 @@ export function mixState(a: SceneState, b: SceneState, t: number): SceneState {
     opacity: lerp(a.opacity, b.opacity, t),
     rings: lerp(a.rings, b.rings, t),
     warm: lerp(a.warm, b.warm, t),
+    stir: lerp(a.stir, b.stir, t),
   }
 }
 
@@ -87,7 +90,10 @@ export type HomeMeasures = {
 
 export function homeKeys(m: HomeMeasures, vh: number, mobile: boolean): Key[] {
   const hero = mobile ? S({ shape: 0, x: 0, y: 0.52, scale: 0.62, rings: 1 }) : S({ shape: 0, x: 0.42, y: 0.02, scale: 0.6, rings: 1 })
-  const manifesto = S({ shape: 0, x: 0, y: 0, scale: mobile ? 0.9 : 0.78, opacity: 0.32, rings: 0.35 })
+  const manifesto = S({ shape: 0, x: 0, y: 0, scale: mobile ? 0.9 : 0.78, opacity: 0.38, rings: 0.35 })
+  const wounded = { ...manifesto, stir: 1, opacity: 0.46, scale: manifesto.scale * 0.92 }
+  const held = { ...manifesto, stir: 0, opacity: 0.72, scale: manifesto.scale * 1.08, rings: 0.7 }
+  const run = Math.max(1, m.manifesto.height - vh)
   const finder = S({ shape: 0, x: mobile ? 0.7 : 0.78, y: 0.55, scale: mobile ? 0.42 : 0.3, opacity: 0.18 })
   const path = (shape: number) =>
     mobile ? S({ shape, x: 0, y: 0.46, scale: 0.54 }) : S({ shape, x: -0.5, y: -0.02, scale: 0.58 })
@@ -95,7 +101,10 @@ export function homeKeys(m: HomeMeasures, vh: number, mobile: boolean): Key[] {
   const keys: Key[] = [
     { at: 0, s: hero },
     { at: m.hero.top + m.hero.height * 0.35, s: hero },
-    { at: center(m.manifesto, vh), s: manifesto },
+    { at: m.manifesto.top, s: manifesto },
+    { at: m.manifesto.top + run * 0.76, s: wounded },
+    { at: m.manifesto.top + run * 0.86, s: held },
+    { at: m.manifesto.top + run, s: held },
     { at: m.finder.top, s: finder },
     { at: m.finder.top + m.finder.height - vh, s: finder },
   ]
@@ -112,7 +121,7 @@ export function homeKeys(m: HomeMeasures, vh: number, mobile: boolean): Key[] {
   keys.push({ at: last.top + last.height - vh * 0.25, s: lotusGone })
 
   // The lotus returns for the women-empowerment / POSH band.
-  const poshLotus = mobile ? S({ shape: 8, x: 0, y: 0.55, scale: 0.6 }) : S({ shape: 8, x: 0.5, y: 0, scale: 0.55 })
+  const poshLotus = mobile ? S({ shape: 8, x: 0, y: 0.55, scale: 0.6 }) : S({ shape: 8, x: 0.5, y: 0.46, scale: 0.42 })
   keys.push(
     { at: m.posh.top - vh, s: { ...poshLotus, opacity: 0 } },
     { at: center(m.posh, vh) - hold, s: poshLotus },

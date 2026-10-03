@@ -54,6 +54,7 @@ uniform float uTurb;
 uniform float uBreath;
 uniform float uLight;
 uniform float uWarm;
+uniform float uPulse;
 uniform vec2 uMouse;
 uniform float uAspect;
 uniform vec3 uC0;
@@ -99,6 +100,9 @@ void main() {
   vec3 q = p * 1.6 + aRand.x * 6.0;
   vec3 n = vec3(snoise(q + t), snoise(q + vec3(17.1, 3.2, 9.7) + t), snoise(q + vec3(31.4, 27.8, 5.1) + t));
   p += n * (0.016 + uTurb * 0.32);
+  // a pulse rolls outward as a wave through the form
+  float wave = sin(length(shape) * 9.0 - uPulse * 14.0) * 0.5 + 0.5;
+  p += normalize(p + vec3(1e-4)) * uPulse * (0.05 + 0.1 * wave) * (0.5 + aRand.y);
   p *= 1.0 + uBreath;
 
   vec4 mv = modelViewMatrix * vec4(p, 1.0);
@@ -139,7 +143,7 @@ void main() {
   col = mix(col, mix(deep, sunDeep, uWarm), uLight);
 
   vColor = col;
-  vAlpha = (0.5 + aRand.y * 0.5) * mix(1.0, 0.62, uLight) * limb;
+  vAlpha = (0.5 + aRand.y * 0.5) * mix(1.0, 0.62, uLight) * limb * (1.0 + uPulse * 0.8);
 }
 `
 
