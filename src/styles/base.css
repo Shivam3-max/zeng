@@ -1,0 +1,461 @@
+/* ============================================================
+   Hardeep Kaur — base tokens, type and primitives
+   Tone variables (--bg, --fg …) are tweened by the tone system
+   as the visitor scrolls from night to dawn.
+   ============================================================ */
+
+:root {
+  --bg: #070818;
+  --fg: #efe9f6;
+  --fg-soft: rgba(239, 233, 246, 0.7);
+  --fg-faint: rgba(239, 233, 246, 0.42);
+  --line: rgba(239, 233, 246, 0.14);
+  --card: rgba(255, 255, 255, 0.035);
+  --accent: #e6b873;
+
+  --gold: #e6b873;
+  --rose: #f2a9be;
+  --lilac: #a79bff;
+  --aqua: #a8f0e4;
+  --ink: #17122b;
+  --ivory: #f4ece2;
+
+  --serif: 'Instrument Serif', 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Hanken Grotesk', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --gutter: clamp(20px, 4.4vw, 64px);
+  --maxw: 1440px;
+  --header-h: 76px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --aura: linear-gradient(110deg, #f4c886 0%, #f3a9c0 52%, #c1b4ff 100%);
+  color-scheme: dark;
+}
+html[data-tone='dawn'] {
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+  text-rendering: optimizeLegibility;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+img,
+svg,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+h1,
+h2,
+h3 {
+  font-weight: 400;
+}
+::selection {
+  background: var(--accent);
+  color: #120e22;
+}
+:focus-visible {
+  outline: 1.5px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
+main {
+  position: relative;
+  z-index: 1;
+}
+
+.wrap {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip {
+  position: fixed;
+  left: 16px;
+  top: -60px;
+  z-index: 300;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: var(--fg);
+  color: var(--bg);
+  transition: top 0.3s;
+}
+.skip:focus {
+  top: 16px;
+}
+
+/* ---------- type ---------- */
+
+.display {
+  font-family: var(--serif);
+  font-weight: 400;
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  font-size: clamp(3.2rem, min(10vw, 15.5vh), 10.5rem);
+  margin: 0;
+}
+.display em,
+.h2 em,
+.panel__title em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.h2 {
+  font-family: var(--serif);
+  font-size: clamp(2.5rem, 5.2vw, 4.9rem);
+  line-height: 0.98;
+  letter-spacing: -0.015em;
+  margin: 0 0 0.35em;
+  text-wrap: balance;
+}
+
+/* SplitText line masks: give italics and descenders room to breathe */
+.split-line-mask {
+  padding: 0 0.08em 0.16em;
+  margin: 0 -0.08em -0.16em;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75em;
+  margin: 0 0 1.4rem;
+  font: 500 0.72rem/1.3 var(--sans);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--fg-soft);
+}
+.eyebrow::before {
+  content: '';
+  width: 24px;
+  height: 1px;
+  background: var(--accent);
+}
+
+.lede {
+  font-size: clamp(1.02rem, 1.2vw, 1.18rem);
+  line-height: 1.65;
+  color: var(--fg-soft);
+  max-width: 36em;
+  margin: 0;
+  text-wrap: pretty;
+}
+
+.label {
+  font: 600 0.68rem/1.2 var(--sans);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+}
+
+.figcap {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.02rem;
+  letter-spacing: 0.01em;
+  color: var(--fg-faint);
+  margin: 0;
+}
+
+/* ---------- buttons & links ---------- */
+
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  height: 54px;
+  padding: 0 28px;
+  border-radius: 999px;
+  font: 500 0.95rem/1 var(--sans);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  transition:
+    background-position 0.9s var(--ease),
+    background-color 0.4s,
+    color 0.4s,
+    border-color 0.4s,
+    box-shadow 0.5s var(--ease);
+}
+.btn--sm {
+  height: 44px;
+  padding: 0 20px;
+  font-size: 0.88rem;
+}
+.btn--solid {
+  color: #1a1324;
+  background-image: linear-gradient(110deg, #f4c886, #f3a9c0 45%, #c1b4ff 75%, #f4c886);
+  background-size: 250% 100%;
+  background-position: 0% 0;
+  box-shadow: 0 10px 40px -14px rgba(243, 169, 192, 0.55);
+}
+.btn--solid:hover {
+  background-position: 100% 0;
+  box-shadow: 0 16px 50px -12px rgba(243, 169, 192, 0.7);
+}
+.btn--ghost {
+  border: 1px solid var(--line);
+  color: var(--fg);
+}
+.btn--ghost:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+html[data-tone='dawn'] main .btn--solid,
+html[data-tone='dawn'] .hdr:not([data-open='true']) .btn--solid {
+  background-image: none;
+  background-color: #1a1530;
+  color: #f4ece2;
+  box-shadow: 0 14px 40px -18px rgba(26, 21, 48, 0.6);
+}
+html[data-tone='dawn'] main .btn--solid:hover,
+html[data-tone='dawn'] .hdr .btn--solid:hover {
+  background-color: #a8742f;
+}
+
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--line);
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition:
+    border-color 0.3s,
+    color 0.3s;
+}
+.link-arrow::after {
+  content: '→';
+  transition: transform 0.5s var(--ease);
+}
+.link-arrow:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.link-arrow:hover::after {
+  transform: translateX(5px);
+}
+
+/* ---------- chips, tags, glass ---------- */
+
+.chip {
+  padding: 12px 18px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--fg-soft);
+  font-size: 0.95rem;
+  line-height: 1.3;
+  text-align: left;
+  transition:
+    background 0.35s,
+    color 0.35s,
+    border-color 0.35s,
+    transform 0.5s var(--ease);
+}
+.chip:hover {
+  color: var(--fg);
+  border-color: var(--fg-faint);
+}
+.chip[aria-pressed='true'] {
+  background: var(--fg);
+  border-color: var(--fg);
+  color: var(--bg);
+}
+.chip--soft {
+  border-style: dashed;
+}
+
+.tag {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  font-size: 0.8rem;
+  line-height: 1.2;
+  color: var(--fg-soft);
+}
+
+.glass {
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.018));
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  backdrop-filter: blur(18px) saturate(1.2);
+  box-shadow: 0 40px 90px -50px rgba(0, 0, 0, 0.7);
+}
+html[data-tone='dawn'] main .glass {
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 30px 80px -50px rgba(26, 21, 48, 0.35);
+}
+
+/* ---------- glyph illustrations ---------- */
+
+.glyph {
+  color: var(--fg);
+  overflow: visible;
+  flex: none;
+}
+.glyph .ac {
+  stroke: var(--accent);
+}
+.glyph .acf {
+  fill: var(--accent);
+  stroke: none;
+}
+.glyph .dotf {
+  fill: currentColor;
+  stroke: none;
+  opacity: 0.6;
+}
+.glyph [pathLength]:not([stroke-dasharray]) {
+  stroke-dasharray: 1;
+}
+
+/* ---------- crisis note ---------- */
+
+.crisis {
+  border: 1px solid rgba(242, 169, 190, 0.45);
+  background: rgba(242, 169, 190, 0.08);
+  border-radius: 18px;
+  padding: 18px 20px;
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+.crisis strong {
+  display: block;
+  color: var(--rose);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.crisis p {
+  margin: 0;
+  color: var(--fg-soft);
+}
+.crisis a {
+  color: var(--fg);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+html[data-tone='dawn'] main .crisis strong {
+  color: #a8345c;
+}
+
+.pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--aqua);
+  box-shadow: 0 0 0 4px rgba(168, 240, 228, 0.16);
+}
+
+.field-error {
+  color: #ff9fb0;
+  font-size: 0.8rem;
+}
+html[data-tone='dawn'] main .field-error {
+  color: #b3264a;
+}
+
+/* film grain over everything — static, so it never costs a frame */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.06;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* ?still&solo= — screenshot harness: one section, at the top */
+html[data-solo] main section:not(.is-solo),
+html[data-solo] .ftr {
+  display: none;
+}
+html[data-solo] main section.is-solo {
+  height: auto !important;
+}
+
+/* ?still=1 — freeze everything in its final state */
+html[data-still] *,
+html[data-still] *::before,
+html[data-still] *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

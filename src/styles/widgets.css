@@ -1,0 +1,337 @@
+/* ============================================================
+   Rituals — tarot, numerology, breath
+   ============================================================ */
+
+/* ---------- tarot ---------- */
+
+.tarot {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: clamp(24px, 4vw, 56px);
+  align-items: center;
+}
+.tarot__stage {
+  position: relative;
+  height: 400px;
+}
+.tcard {
+  position: absolute;
+  left: 50%;
+  top: 46px;
+  width: 150px;
+  aspect-ratio: 150 / 250;
+  margin-left: -75px;
+  padding: 0;
+  border-radius: 10px;
+  perspective: 1100px;
+  transform-origin: 50% 120%;
+}
+.tcard:disabled {
+  cursor: default;
+}
+.tcard__inner {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: translate 0.5s var(--ease);
+}
+.tcard:not(:disabled):hover .tcard__inner,
+.tcard:not(:disabled):focus-visible .tcard__inner {
+  translate: 0 -18px;
+}
+.tcard__back,
+.tcard__face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 10px;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  box-shadow: 0 22px 40px -16px rgba(0, 0, 0, 0.6);
+}
+.tcard__face {
+  transform: rotateY(180deg);
+}
+.tcard__svg {
+  width: 100%;
+  height: 100%;
+}
+.tarot__hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  text-align: center;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.08rem;
+  color: var(--fg-soft);
+}
+.tarot__drew {
+  margin: 0;
+  font: 600 0.68rem/1 var(--sans);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+}
+.tarot__drew span {
+  color: var(--accent);
+}
+.tarot__name {
+  margin: 12px 0 14px;
+  font-family: var(--serif);
+  font-size: clamp(2.1rem, 3.2vw, 2.9rem);
+  line-height: 1;
+}
+.tarot__msg {
+  margin: 0 0 10px;
+  font-family: var(--serif);
+  font-size: clamp(1.3rem, 1.8vw, 1.6rem);
+  line-height: 1.3;
+}
+.tarot__msg--muted {
+  font-family: var(--sans);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--fg-soft);
+}
+.tarot__ask {
+  margin: 0;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--accent);
+}
+.tarot__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 24px 0 14px;
+}
+.tarot__note {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--fg-faint);
+}
+
+/* ---------- numerology ---------- */
+
+.numero {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: clamp(24px, 4vw, 64px);
+  align-items: center;
+}
+.numero__wheel svg {
+  width: 100%;
+  max-width: 380px;
+  margin: auto;
+  overflow: visible;
+}
+.numero__ring {
+  fill: none;
+  stroke: var(--line);
+}
+.numero__ring--faint {
+  stroke-dasharray: 2 6;
+}
+.numero__ennea {
+  fill: none;
+  stroke: var(--fg-faint);
+  stroke-width: 0.8;
+}
+.numero__ennea--tri {
+  stroke: var(--accent);
+  opacity: 0.6;
+}
+.numero__node {
+  fill: var(--bg);
+  stroke: var(--fg-soft);
+  transition:
+    fill 0.6s,
+    stroke 0.6s;
+}
+.numero__label {
+  font-family: var(--serif);
+  font-size: 18px;
+  fill: var(--fg-soft);
+  transition: fill 0.6s;
+}
+.is-on .numero__node {
+  fill: var(--accent);
+  stroke: var(--accent);
+}
+.is-on .numero__label {
+  fill: var(--accent);
+}
+.numero__pointer {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.5;
+}
+.numero__big {
+  font-family: var(--serif);
+  font-size: 64px;
+  fill: var(--fg);
+}
+.numero__form .label {
+  display: block;
+  margin-bottom: 12px;
+}
+.numero__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.numero__row input {
+  height: 44px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--fg);
+  outline: none;
+}
+.numero__row input:focus {
+  border-color: var(--accent);
+}
+.numero__privacy {
+  margin: 10px 0 0;
+  font-size: 0.8rem;
+  color: var(--fg-faint);
+}
+.numero__result {
+  margin-top: 26px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+.numero__kicker {
+  margin: 0;
+  font: 600 0.68rem/1 var(--sans);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.numero__title {
+  margin: 10px 0 10px;
+  font-family: var(--serif);
+  font-size: clamp(1.9rem, 2.8vw, 2.5rem);
+  line-height: 1.05;
+}
+.numero__line {
+  margin: 0;
+  color: var(--fg-soft);
+}
+.numero__steps {
+  display: grid;
+  gap: 2px;
+  margin: 16px 0 0;
+  font-size: 0.82rem;
+  color: var(--fg-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- breath ---------- */
+
+.breathe {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+}
+.breathe__stage {
+  position: relative;
+  width: min(100%, 340px);
+  aspect-ratio: 1;
+  margin: 0 auto 40px;
+  display: grid;
+  place-items: center;
+}
+.breathe__arc {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.breathe__track,
+.breathe__progress {
+  fill: none;
+}
+.breathe__track {
+  stroke: var(--line);
+}
+.breathe__progress {
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.breathe__orb {
+  width: 44%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 34%, #fff3e2, #f4b6c8 32%, #9f93ff 68%, rgba(159, 147, 255, 0) 72%);
+  box-shadow: 0 0 90px rgba(242, 169, 190, 0.35);
+}
+.breathe__word {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -46px;
+  margin: 0;
+  text-align: center;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.6rem;
+}
+.breathe__title {
+  margin: 0 0 12px;
+  font-family: var(--serif);
+  font-size: clamp(2.1rem, 3.2vw, 2.9rem);
+  line-height: 1;
+}
+.breathe__title em {
+  color: var(--accent);
+}
+.breathe__line {
+  margin: 0 0 24px;
+  max-width: 30em;
+  color: var(--fg-soft);
+}
+
+@media (max-width: 899px) {
+  .tarot,
+  .numero,
+  .breathe {
+    grid-template-columns: 1fr;
+  }
+  .tarot__stage {
+    height: 320px;
+  }
+  .tcard {
+    width: 118px;
+    margin-left: -59px;
+    top: 30px;
+  }
+  .numero__wheel svg {
+    max-width: 300px;
+  }
+  .breathe {
+    gap: 24px;
+  }
+}
+
+@media (max-width: 420px) {
+  .tcard {
+    width: 100px;
+    margin-left: -50px;
+  }
+  .tarot__stage {
+    height: 290px;
+  }
+}
